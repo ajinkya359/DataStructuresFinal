@@ -17,7 +17,38 @@ public:
     void inorderStack();
     node* search(node* root,int key);
     node* search_iterative(int key);
+    node* maximum(node* root);
+    node* minimum(node* root);
+    node* tree_successor(int key);
 };
+node* Graph::tree_successor(int key){
+    node* n=search_iterative(key);
+    if(n==NULL) return NULL;
+    if(n->right) return minimum(n->right);
+    node* y=n->parent;
+    while(y&&y->right==n)
+    {
+        n=y;
+        y=y->parent;
+    }
+    return y;
+}
+node* Graph::minimum(node* root){
+    node* temp=root;
+    if(!temp) return NULL;
+    while(temp->left)
+        temp=temp->left;
+    return temp;
+    
+}
+node* Graph::maximum(node* root){
+    node* temp=root;
+    if(!temp) return NULL;
+    while(temp->right)
+        temp=temp->right;
+    return temp;
+    
+}
 node* Graph::search_iterative(int key){
     node* temp=root;
     while(temp){
@@ -111,6 +142,8 @@ int main(){
     G.insertNode(3);
     G.insertNode(8);
     G.insertNode(2);
-    G.insertNode(5);
-    cout<<(G.search_iterative(10))<<endl;
+    G.insertNode(4);
+    // cout<<G.minimum()->key<<endl;
+    // cout<<G.maximum()->key<<endl;
+    cout<<G.tree_successor(4)->key<<endl;
 }
