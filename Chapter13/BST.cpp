@@ -20,7 +20,20 @@ public:
     node* maximum(node* root);
     node* minimum(node* root);
     node* tree_successor(int key);
+    node* tree_predecessor(int key);
 };
+node* Graph::tree_predecessor(int key){
+    node* temp=search_iterative(key);
+    if(temp==NULL) return NULL;
+    if(temp->left) return maximum(temp->left);
+    node* y=temp->parent;
+    while(y&&temp==y->left)
+    {
+        temp=y;
+        y=y->parent;
+    }
+    return y;
+}
 node* Graph::tree_successor(int key){
     node* n=search_iterative(key);
     if(n==NULL) return NULL;
@@ -142,8 +155,9 @@ int main(){
     G.insertNode(3);
     G.insertNode(8);
     G.insertNode(2);
+    G.insertNode(5);
     G.insertNode(4);
     // cout<<G.minimum()->key<<endl;
     // cout<<G.maximum()->key<<endl;
-    cout<<G.tree_successor(4)->key<<endl;
+    cout<<G.tree_predecessor(5)->key<<endl;
 }
