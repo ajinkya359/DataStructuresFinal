@@ -21,7 +21,35 @@ public:
     node* minimum(node* root);
     node* tree_successor(int key);
     node* tree_predecessor(int key);
+    void delete_node(int key);
 };
+void Graph::delete_node(int key){
+    node* z=search_iterative(key);
+    node* y;
+    if(z->left==NULL||z->right==NULL)//means that z dont have both child
+        y=z;
+    else//means that z has both children
+        y=tree_successor(key);
+    //now we are sure that y will have atmost of one child only
+    node* child;
+    if(y->left!=NULL)
+        child=y->left;
+    else
+        child=y->right;
+    if(child!=NULL)//meansd that if the child exists, then you need to set its parent also
+        child->parent=y->parent;
+    if(y->parent==NULL)//it means that if y was a root
+        root=child;
+    else
+    {    
+        if(y==y->parent->left)
+            y->parent->left=child;
+        else
+            y->parent->right=child;
+    }
+    if(y!=z)
+        z->key=y->key;
+}
 node* Graph::tree_predecessor(int key){
     node* temp=search_iterative(key);
     if(temp==NULL) return NULL;
@@ -155,9 +183,10 @@ int main(){
     G.insertNode(3);
     G.insertNode(8);
     G.insertNode(2);
-    G.insertNode(5);
     G.insertNode(4);
     // cout<<G.minimum()->key<<endl;
     // cout<<G.maximum()->key<<endl;
-    cout<<G.tree_predecessor(5)->key<<endl;
+    cout<<"Inorder 1"<<endl;
+    G.delete_node(5);
+    G.inorder(G.root);
 }
