@@ -3,9 +3,11 @@ using namespace std;
 struct node
 {
     int key;
+    int color; //0 for red and 1 for black  
     node* left;
     node* right;
     node* parent;
+    
 };
 class Graph{
 public:
@@ -24,7 +26,58 @@ public:
     void delete_node(int key);
     void left_rotate(int key);
     void right_rotate(int key);
+    void rb_insert(int key);
 };
+void Graph::rb_insert(int key){
+    insertNode(key);
+    node* x=search_iterative(key);
+    x->color=0;
+    while(x!=root&&x->parent->color==0)
+    {
+        if(x->parent==x->parent->parent->left)
+        {
+            node* y=x->parent->parent->left;
+            if(y->color==0)
+            {
+                x->parent->color=1;
+                y->color=1;
+                x->parent->parent->color=0;
+                x=x->parent->parent;
+            }
+            else if(x==x->parent->right)
+            {
+                x=x->parent;
+                left_rotate(x->key);
+            }
+            else{
+                x->parent->color=1;
+                x->parent->parent->color=0;
+                right_rotate(x->parent->parent->key);
+            }
+        }
+        else{
+            node* y=x->parent->parent->right;
+            if(y->color==0)
+            {
+                x->parent->color=1;
+                y->color=1;
+                x->parent->parent->color=0;
+                x=x->parent->parent;
+            }
+            else if(x==x->parent->left)
+            {
+                x=x->parent;
+                right_rotate(x->key);
+            }
+            else{
+                x->parent->color=1;
+                x->parent->parent->color=0;
+                left_rotate(x->parent->parent->key);
+            }
+        }
+    }
+    root->color=1;
+}
 void Graph::left_rotate(int key){
     node* x=search_iterative(key);
     if(x->right==NULL) return;
@@ -214,14 +267,22 @@ void Graph::insertNode(int key){
 }
 int main(){
     Graph G;
-    G.insertNode(5);
-    G.insertNode(7);
-    G.insertNode(3);
-    G.insertNode(8);
-    G.insertNode(2);
-    G.insertNode(4);
-    G.insertNode(6);
-    G.left_rotate(5);
-    G.right_rotate(5);
-    cout<<G.search_iterative(6)->parent->key<<endl;
+    G.rb_insert(1);
+    G.rb_insert(2);
+    G.rb_insert(3);
+    G.rb_insert(4);
+    G.rb_insert(5);
+    G.rb_insert(6);
+    G.rb_insert(7);
+    G.rb_insert(8);
+    for(int i=1;i<=8;i++)
+    {
+        node* temp=G.search_iterative(6)->parent;
+        if(temp)
+            cout<<"Key of parent of "<<i<<" is "<<temp->key<<endl;
+        else
+            cout<<i<<" is the root"<<endl;
+    }
+    cout<<G.search_iterative(5)->left->key<<endl;
+    cout<<G.search_iterative(5)->right->key<<endl;
 }
