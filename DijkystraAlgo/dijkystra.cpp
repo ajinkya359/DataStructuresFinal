@@ -53,19 +53,24 @@ void graph::print_shortest_path(vertex* start,vertex* end)
 }
 void graph::dijkstra(vertex* s)
 {
+    //Just Initializing all of the nodes
     for(int i=0;i<number_of_vertices;i++)
     {
         real_graph[i].distance=INT_MAX;
         real_graph[i].parent=NULL;
     }
+    //Setting root node's distance as 0
     s->distance=0;
+    //Initialising the min queue
     priority_queue<vertex*,vector<vertex*>,minSequence> q;
+    //pushing all the nodes in the priority_queue
     for(int i=0;i<number_of_vertices;i++)   
         q.push(&real_graph[i]);
-    while(!q.empty()){
-        vertex* temp=q.top();
-        q.pop();
-        for(auto x:temp->neighbours)
+    while(!q.empty()){//This will run until the whole is not empty
+        
+        vertex* temp=q.top();//extract the node with the minimum distance
+        q.pop();//now this node is finished and we dont need to look at it again
+        for(auto x:temp->neighbours)//Set the distance of all of its neighbours, to the minimum possible
         {
             if(temp->distance+x.second<x.first->distance)
             {
